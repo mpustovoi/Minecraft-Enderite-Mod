@@ -9,6 +9,7 @@ public class Config {
 
     public static class General {
         public boolean allowVoidFloatingEnchantment = true;
+        public float enderiteUpgradeTemplateChance = 0.5f;
     }
 
     public static class Tools {
@@ -20,10 +21,16 @@ public class Config {
 
         public float enderiteBowAD = 2.5f;
         public float enderiteBowArrowSpeed = 3.5f;
+        public boolean enderiteBowNeedsArrow = true;
+        public boolean enderiteBowWithInfinityNeedsArrow = false;
+        public float enderiteBowChargeTime = 30.0f;
         public float enderiteCrossbowAD = 3.0f;
         public float enderiteCrossbowArrowSpeed = 3.65f;
+        public float enderiteCrossBowChargeTime = 35.0f;
 
         public int durability = 4096;
+
+        public int maxTeleportCharge = 64;
     }
 
     public static class WorldGeneration {
@@ -40,6 +47,7 @@ public class Config {
         public int leggingsProtection = 7;
         public int chestplateProtection = 9;
         public int helmetProtection = 4;
+        public int bodyProtection = 12;
 
         public int durabilityMultiplier = 8;
         public int enchantability = 17;

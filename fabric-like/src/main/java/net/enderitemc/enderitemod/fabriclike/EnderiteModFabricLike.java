@@ -1,6 +1,8 @@
 package net.enderitemc.enderitemod.fabriclike;
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.enderitemc.enderitemod.tools.EnderiteShears;
+import net.enderitemc.enderitemod.tools.EnderiteShield;
+import net.enderitemc.enderitemod.tools.EnderiteTools;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.enderitemc.enderitemod.EnderiteMod;
 import net.enderitemc.enderitemod.fabriclike.tools.EnderiteElytraChestplate;
@@ -14,15 +16,14 @@ import net.minecraft.block.dispenser.ShearsDispenserBehavior;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+
+import static net.enderitemc.enderitemod.tools.EnderiteTools.ENDERITE_SHIELD_ITEM_SETTINGS;
 
 public class EnderiteModFabricLike {
 
         // Enderite Elytra
         public static final RegistrySupplier<Item> ENDERITE_ELYTRA = EnderiteMod.ITEMS.register("enderite_elytra",
-                        () -> new EnderiteElytraChestplate(EnderiteArmorMaterial.ENDERITE,
+                        () -> new EnderiteElytraChestplate(EnderiteMod.ENDERITE_ARMOR_MATERIAL,
                                         ArmorItem.Type.CHESTPLATE,
                                         EnderiteMod.ENDERITE_ELYTRA_ITEM_SETTINGS));
         public static final RegistrySupplier<Item> ENDERITE_ELYTRA_SEPERATED = EnderiteMod.ITEMS.register(
@@ -30,19 +31,17 @@ public class EnderiteModFabricLike {
                         () -> new EnderiteElytraSeperated(
                                         EnderiteMod.ENDERITE_ELYTRA_SEPERATED_ITEM_SETTINGS));
 
-        public static final RegistrySupplier<BlockEntityType<EnderiteShulkerBoxBlockEntity>> ENDERITE_SHULKER_BOX_BLOCK_ENTITY = EnderiteMod.BLOCK_ENTITY_TYPES
-                        .register("enderite_shulker_box_block_entity",
-                                        () -> FabricBlockEntityTypeBuilder
-                                                        .create(EnderiteShulkerBoxBlockEntity::new,
-                                                                        EnderiteMod.ENDERITE_SHULKER_BOX.get())
-                                                        .build(null));
+        public static final RegistrySupplier<Item> ENDERITE_SHIELD = EnderiteMod.ITEMS.register("enderite_shield",
+                 () -> new EnderiteShield(
+                ENDERITE_SHIELD_ITEM_SETTINGS));
 
         public static void init() {
                 EnderiteMod.ENDERITE_ELYTRA = ENDERITE_ELYTRA;
                 EnderiteMod.ENDERITE_ELYTRA_SEPERATED = ENDERITE_ELYTRA_SEPERATED;
-                EnderiteMod.ENDERITE_SHULKER_BOX_BLOCK_ENTITY = ENDERITE_SHULKER_BOX_BLOCK_ENTITY;
+                EnderiteTools.ENDERITE_SHIELD = ENDERITE_SHIELD;
                 
                 EnderiteMod.init();
+                EnderiteShears.registerLoottables_Fabric();
 
                 // ItemGroup
                 // ItemGroupEvents.modifyEntriesEvent(EnderiteMod.ENDERITE_TAB.getKey()).register(content -> {
@@ -52,7 +51,7 @@ public class EnderiteModFabricLike {
 
                 DispenserBlock.registerBehavior(EnderiteMod.ENDERITE_SHULKER_BOX.get().asItem(),
                                 new BlockPlacementDispenserBehavior());
-                DispenserBlock.registerBehavior(EnderiteMod.ENDERITE_SHEAR.get().asItem(),
+                DispenserBlock.registerBehavior(EnderiteTools.ENDERITE_SHEAR.get().asItem(),
                                 new ShearsDispenserBehavior());
 
         }

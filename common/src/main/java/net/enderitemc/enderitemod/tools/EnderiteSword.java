@@ -2,11 +2,14 @@ package net.enderitemc.enderitemod.tools;
 
 import java.util.List;
 
-import net.minecraft.client.item.TooltipContext;
+import net.enderitemc.enderitemod.misc.EnderiteDataComponents;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -23,7 +26,8 @@ public class EnderiteSword extends SwordItem {
     public int superAufladung;
 
     public EnderiteSword(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
-        super(material, attackDamage, attackSpeed, settings);
+        super(material,
+            settings.attributeModifiers(SwordItem.createAttributeModifiers(material, attackDamage, attackSpeed)));
     }
 
     @Override
@@ -59,11 +63,7 @@ public class EnderiteSword extends SwordItem {
             }
             double near = distance;
 
-            int slot = 0;
-            if (playerEntity.getStackInHand(hand).getNbt().contains("teleport_charge")) {
-                slot = Integer.parseInt(playerEntity.getStackInHand(hand).getNbt().get("teleport_charge").asString());
-
-            }
+            int slot = playerEntity.getStackInHand(hand).getOrDefault(EnderiteDataComponents.TELEPORT_CHARGE.get(), 0);
 
             // Check to Teleport
             if (world.isChunkLoaded(blockPos) && (slot > 0 || playerEntity.getAbilities().creativeMode)) {
@@ -132,7 +132,7 @@ public class EnderiteSword extends SwordItem {
                     // playerEntity.inventory.getStack(slot).decrement(1);
                     // }
                     if (!playerEntity.getAbilities().creativeMode) {
-                        playerEntity.getStackInHand(hand).getNbt().putInt("teleport_charge", slot - 1);
+                        playerEntity.getStackInHand(hand).set(EnderiteDataComponents.TELEPORT_CHARGE.get(), slot - 1);
                     }
                     world.sendEntityStatus(playerEntity, (byte) 46);
                     world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
@@ -159,15 +159,10 @@ public class EnderiteSword extends SwordItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-        if (itemStack.getNbt().contains("teleport_charge")) {
-            String charge = itemStack.getNbt().get("teleport_charge").toString();
-            tooltip.add(Text.translatable("item.enderitemod.enderite_sword.charge")
-                    .formatted(new Formatting[] { Formatting.DARK_AQUA }).append(Text.literal(": " + charge)));
-        } else {
-            tooltip.add(Text.translatable("item.enderitemod.enderite_sword.charge")
-                    .formatted(new Formatting[] { Formatting.DARK_AQUA }).append(Text.literal(": 0")));
-        }
+    public void appendTooltip(ItemStack itemStack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        String charge = itemStack.getOrDefault(EnderiteDataComponents.TELEPORT_CHARGE.get(), 0).toString();
+        tooltip.add(Text.translatable("item.enderitemod.enderite_sword.charge")
+                .formatted(new Formatting[] { Formatting.DARK_AQUA }).append(Text.literal(": " + charge)));
         tooltip.add(Text.translatable("item.enderitemod.enderite_sword.tooltip1")
                 .formatted(new Formatting[] { Formatting.GRAY, Formatting.ITALIC }));
         tooltip.add(Text.translatable("item.enderitemod.enderite_sword.tooltip2")
@@ -175,10 +170,6 @@ public class EnderiteSword extends SwordItem {
         tooltip.add(Text.translatable("item.enderitemod.enderite_sword.tooltip3")
                 .formatted(new Formatting[] { Formatting.GRAY, Formatting.ITALIC }));
 
-    }
-
-    @Override
-    public void onCraft(ItemStack stack, World world, PlayerEntity player) {
     }
 
 }

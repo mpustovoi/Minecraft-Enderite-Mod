@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "enderitemod:cracked_enderite_ore"
+  },
+  "result": {
+    "id": "enderitemod:enderite_scrap"
+  },
+  "experience": 4,
+  "cookingtime": 400
+}
